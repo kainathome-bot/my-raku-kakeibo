@@ -11,6 +11,8 @@ import { ArrowLeft, Plus, Edit2, Trash2, Play } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 
+const selectClassName = "block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600";
+
 export default function FixedCostsPage() {
     const { fixedCosts, activeFixedCosts, addFixedCost, updateFixedCost, deleteFixedCost } = useFixedCosts();
     const { activeCategories, categories } = useCategories();
@@ -21,7 +23,6 @@ export default function FixedCostsPage() {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [isPosting, setIsPosting] = useState(false);
 
-    // Form state
     const [name, setName] = useState('');
     const [categoryId, setCategoryId] = useState('');
     const [paymentMethodId, setPaymentMethodId] = useState('');
@@ -116,12 +117,11 @@ export default function FixedCostsPage() {
         <div className="p-4 safe-area-bottom pb-24">
             <div className="flex items-center gap-2 mb-6">
                 <Link href="/settings">
-                    <ArrowLeft className="h-6 w-6 text-gray-500" />
+                    <ArrowLeft className="h-6 w-6 text-gray-500 dark:text-gray-400" />
                 </Link>
-                <h1 className="text-xl font-bold">固定費管理</h1>
+                <h1 className="text-xl font-bold dark:text-white">固定費管理</h1>
             </div>
 
-            {/* Manual Post Button */}
             <div className="mb-6">
                 <Button
                     onClick={handleManualPost}
@@ -132,15 +132,14 @@ export default function FixedCostsPage() {
                     <Play className="h-4 w-4 mr-2" />
                     今月分の固定費を計上
                 </Button>
-                <p className="text-xs text-gray-500 mt-2 text-center">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
                     ※ 毎月1日に自動計上されます（重複なし）
                 </p>
             </div>
 
             <div className="space-y-4">
-                {/* Add/Edit Form */}
                 {(isAdding || editingId) && (
-                    <form onSubmit={isAdding ? handleAdd : (e) => { e.preventDefault(); handleUpdate(); }} className="bg-blue-50 p-4 rounded-lg border border-blue-100 space-y-3">
+                    <form onSubmit={isAdding ? handleAdd : (e) => { e.preventDefault(); handleUpdate(); }} className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg border border-blue-100 dark:border-blue-800 space-y-3">
                         <Input
                             placeholder="名称（例：家賃）"
                             value={name}
@@ -151,7 +150,7 @@ export default function FixedCostsPage() {
                         <select
                             value={categoryId}
                             onChange={e => setCategoryId(e.target.value)}
-                            className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm"
+                            className={selectClassName}
                             required
                         >
                             <option value="">カテゴリを選択</option>
@@ -164,7 +163,7 @@ export default function FixedCostsPage() {
                         <select
                             value={paymentMethodId}
                             onChange={e => setPaymentMethodId(e.target.value)}
-                            className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm"
+                            className={selectClassName}
                             required
                         >
                             <option value="">支払い方法を選択</option>
@@ -202,29 +201,28 @@ export default function FixedCostsPage() {
                     </Button>
                 )}
 
-                {/* List */}
                 <ul className="space-y-2">
                     {activeFixedCosts.map(fc => (
-                        <li key={fc.id} className="bg-white p-4 rounded-lg border shadow-sm">
+                        <li key={fc.id} className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700 shadow-sm">
                             <div className="flex justify-between items-start">
                                 <div>
-                                    <p className="font-medium text-gray-900">{fc.name}</p>
-                                    <p className="text-xs text-gray-500 mt-1">
+                                    <p className="font-medium text-gray-900 dark:text-gray-100">{fc.name}</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                         {getCategoryName(fc.category_id)} • {getPaymentMethodName(fc.payment_method_id)}
                                     </p>
                                 </div>
-                                <p className="font-bold text-lg">¥{fc.amount.toLocaleString()}</p>
+                                <p className="font-bold text-lg dark:text-white">¥{fc.amount.toLocaleString()}</p>
                             </div>
                             <div className="flex gap-2 mt-3">
                                 <button
                                     onClick={() => startEdit(fc)}
-                                    className="p-2 text-gray-500 hover:bg-gray-100 rounded"
+                                    className="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
                                 >
                                     <Edit2 className="h-4 w-4" />
                                 </button>
                                 <button
                                     onClick={() => handleDelete(fc.id)}
-                                    className="p-2 text-red-500 hover:bg-red-50 rounded"
+                                    className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded"
                                 >
                                     <Trash2 className="h-4 w-4" />
                                 </button>
@@ -234,7 +232,7 @@ export default function FixedCostsPage() {
                 </ul>
 
                 {activeFixedCosts.length === 0 && !isAdding && (
-                    <p className="text-center text-gray-500 py-4 text-sm">
+                    <p className="text-center text-gray-500 dark:text-gray-400 py-4 text-sm">
                         固定費がまだ登録されていません
                     </p>
                 )}

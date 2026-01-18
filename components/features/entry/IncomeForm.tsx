@@ -16,6 +16,10 @@ interface IncomeFormProps {
     onDateChange: (date: string) => void;
 }
 
+const selectClassName = "mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600";
+
+const textareaClassName = "mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 min-h-[60px] placeholder:text-gray-500 dark:placeholder:text-gray-400";
+
 export function IncomeForm({
     editingId,
     onSuccess,
@@ -92,9 +96,9 @@ export function IncomeForm({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 bg-white p-4 rounded-lg shadow-sm border">
+        <form onSubmit={handleSubmit} className="space-y-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border dark:border-gray-700">
             <div>
-                <label className="block text-sm font-medium text-gray-700">日付</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">日付</label>
                 <Input
                     type="date"
                     value={selectedDate}
@@ -105,11 +109,11 @@ export function IncomeForm({
             </div>
 
             <div>
-                <label className="block text-sm font-medium text-gray-700">収入区分</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">収入区分</label>
                 <select
                     value={sourceId}
                     onChange={(e) => setSourceId(e.target.value)}
-                    className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+                    className={selectClassName}
                     required
                 >
                     <option value="">収入区分を選択</option>
@@ -122,7 +126,7 @@ export function IncomeForm({
             </div>
 
             <div>
-                <label className="block text-sm font-medium text-gray-700">金額</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">金額</label>
                 <NumericInput
                     value={amount}
                     onChange={setAmount}
@@ -133,11 +137,11 @@ export function IncomeForm({
             </div>
 
             <div>
-                <label className="block text-sm font-medium text-gray-700">メモ</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">メモ</label>
                 <textarea
                     value={memo}
                     onChange={(e) => setMemo(e.target.value)}
-                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 min-h-[60px]"
+                    className={textareaClassName}
                     placeholder="備考..."
                 />
             </div>

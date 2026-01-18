@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, Expense, Income } from '@/lib/db';
 import { useCategories, usePaymentMethods } from '@/hooks/useMasterData';
@@ -9,12 +9,14 @@ import { generateCSV, downloadCSV } from '@/lib/csvExport';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { format, startOfMonth, endOfMonth } from 'date-fns';
-import { Search, Download, ArrowLeft } from 'lucide-react';
+import { Download, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
 type RecordType = 'expense' | 'income';
 type FixedFilter = 'all' | 'fixed' | 'variable';
+
+const selectClassName = "block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600";
 
 export default function SearchPage() {
     const today = new Date();
@@ -31,7 +33,6 @@ export default function SearchPage() {
     const { incomeSources } = useIncomeSources();
     const [sourceId, setSourceId] = useState('');
 
-    // Query expenses
     const expenses = useLiveQuery(
         async () => {
             if (recordType !== 'expense') return [];
@@ -41,7 +42,6 @@ export default function SearchPage() {
                 .filter(e => !e.deleted)
                 .toArray();
 
-            // Apply filters
             if (categoryId) {
                 results = results.filter(e => e.category_id === categoryId);
             }
@@ -62,7 +62,6 @@ export default function SearchPage() {
         [startDate, endDate, recordType, categoryId, paymentMethodId, rating, fixedFilter]
     );
 
-    // Query incomes
     const incomes = useLiveQuery(
         async () => {
             if (recordType !== 'income') return [];
@@ -110,7 +109,6 @@ export default function SearchPage() {
             });
             downloadCSV(csvContent, startDate, endDate);
         } else {
-            // Simple CSV for incomes
             const header = 'date,source,amount,memo';
             const rows = (results as Income[]).map(i =>
                 `${i.date},${getSourceName(i.source_id)},${i.amount},"${i.memo.replace(/"/g, '""')}"`
@@ -128,18 +126,17 @@ export default function SearchPage() {
         <div className="p-4 safe-area-bottom pb-24">
             <div className="flex items-center gap-2 mb-4">
                 <Link href="/">
-                    <ArrowLeft className="h-6 w-6 text-gray-500" />
+                    <ArrowLeft className="h-6 w-6 text-gray-500 dark:text-gray-400" />
                 </Link>
-                <h1 className="text-xl font-bold">検索</h1>
+                <h1 className="text-xl font-bold dark:text-white">検索</h1>
             </div>
 
-            {/* Type Toggle */}
-            <div className="flex rounded-lg bg-gray-100 p-1 mb-4">
+            <div className="flex rounded-lg bg-gray-100 dark:bg-gray-800 p-1 mb-4">
                 <button
                     onClick={() => setRecordType('expense')}
                     className={cn(
                         "flex-1 py-2 text-sm font-medium rounded-md transition-colors",
-                        recordType === 'expense' ? "bg-white shadow-sm" : "text-gray-600"
+                        recordType === 'expense' ? "bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-white" : "text-gray-600 dark:text-gray-400"
                     )}
                 >
                     支出
@@ -148,22 +145,21 @@ export default function SearchPage() {
                     onClick={() => setRecordType('income')}
                     className={cn(
                         "flex-1 py-2 text-sm font-medium rounded-md transition-colors",
-                        recordType === 'income' ? "bg-white shadow-sm" : "text-gray-600"
+                        recordType === 'income' ? "bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-white" : "text-gray-600 dark:text-gray-400"
                     )}
                 >
                     収入
                 </button>
             </div>
 
-            {/* Filters */}
-            <div className="bg-white p-4 rounded-lg border mb-4 space-y-3">
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700 mb-4 space-y-3">
                 <div className="grid grid-cols-2 gap-3">
                     <div>
-                        <label className="text-xs text-gray-500">開始日</label>
+                        <label className="text-xs text-gray-500 dark:text-gray-400">開始日</label>
                         <Input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
                     </div>
                     <div>
-                        <label className="text-xs text-gray-500">終了日</label>
+                        <label className="text-xs text-gray-500 dark:text-gray-400">終了日</label>
                         <Input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
                     </div>
                 </div>
@@ -171,11 +167,11 @@ export default function SearchPage() {
                 {recordType === 'expense' ? (
                     <>
                         <div>
-                            <label className="text-xs text-gray-500">カテゴリ</label>
+                            <label className="text-xs text-gray-500 dark:text-gray-400">カテゴリ</label>
                             <select
                                 value={categoryId}
                                 onChange={e => setCategoryId(e.target.value)}
-                                className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm"
+                                className={selectClassName}
                             >
                                 <option value="">すべて</option>
                                 {activeCategories.map(cat => (
@@ -187,11 +183,11 @@ export default function SearchPage() {
                         </div>
 
                         <div>
-                            <label className="text-xs text-gray-500">支払い方法</label>
+                            <label className="text-xs text-gray-500 dark:text-gray-400">支払い方法</label>
                             <select
                                 value={paymentMethodId}
                                 onChange={e => setPaymentMethodId(e.target.value)}
-                                className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm"
+                                className={selectClassName}
                             >
                                 <option value="">すべて</option>
                                 {activePaymentMethods.map(pm => (
@@ -201,7 +197,7 @@ export default function SearchPage() {
                         </div>
 
                         <div>
-                            <label className="text-xs text-gray-500">評価</label>
+                            <label className="text-xs text-gray-500 dark:text-gray-400">評価</label>
                             <div className="flex gap-2 mt-1">
                                 {['', '○', '△', '✖'].map(r => (
                                     <button
@@ -210,7 +206,7 @@ export default function SearchPage() {
                                         onClick={() => setRating(r as typeof rating)}
                                         className={cn(
                                             "flex-1 py-1.5 border rounded text-sm",
-                                            rating === r ? "bg-blue-100 border-blue-500" : "border-gray-200"
+                                            rating === r ? "bg-blue-100 dark:bg-blue-900/50 border-blue-500 text-blue-700 dark:text-blue-300" : "border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300"
                                         )}
                                     >
                                         {r || 'すべて'}
@@ -220,7 +216,7 @@ export default function SearchPage() {
                         </div>
 
                         <div>
-                            <label className="text-xs text-gray-500">固定/変動</label>
+                            <label className="text-xs text-gray-500 dark:text-gray-400">固定/変動</label>
                             <div className="flex gap-2 mt-1">
                                 {(['all', 'fixed', 'variable'] as const).map(f => (
                                     <button
@@ -229,7 +225,7 @@ export default function SearchPage() {
                                         onClick={() => setFixedFilter(f)}
                                         className={cn(
                                             "flex-1 py-1.5 border rounded text-sm",
-                                            fixedFilter === f ? "bg-blue-100 border-blue-500" : "border-gray-200"
+                                            fixedFilter === f ? "bg-blue-100 dark:bg-blue-900/50 border-blue-500 text-blue-700 dark:text-blue-300" : "border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300"
                                         )}
                                     >
                                         {f === 'all' ? 'すべて' : f === 'fixed' ? '固定' : '変動'}
@@ -240,11 +236,11 @@ export default function SearchPage() {
                     </>
                 ) : (
                     <div>
-                        <label className="text-xs text-gray-500">収入区分</label>
+                        <label className="text-xs text-gray-500 dark:text-gray-400">収入区分</label>
                         <select
                             value={sourceId}
                             onChange={e => setSourceId(e.target.value)}
-                            className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm"
+                            className={selectClassName}
                         >
                             <option value="">すべて</option>
                             {incomeSources?.filter(s => s.is_active).map(src => (
@@ -255,17 +251,15 @@ export default function SearchPage() {
                 )}
             </div>
 
-            {/* Results Summary */}
-            <div className="bg-gray-50 p-3 rounded-lg mb-4 flex justify-between items-center">
-                <span className="text-sm">
+            <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg mb-4 flex justify-between items-center border dark:border-gray-700">
+                <span className="text-sm text-gray-700 dark:text-gray-300">
                     {results?.length ?? 0}件
                 </span>
-                <span className={cn("text-lg font-bold", recordType === 'income' ? "text-green-600" : "")}>
+                <span className={cn("text-lg font-bold", recordType === 'income' ? "text-green-600 dark:text-green-400" : "text-gray-900 dark:text-white")}>
                     {recordType === 'income' ? '+' : ''}¥{totalAmount.toLocaleString()}
                 </span>
             </div>
 
-            {/* Export Button */}
             <Button
                 onClick={handleExportCSV}
                 variant="secondary"
@@ -276,24 +270,23 @@ export default function SearchPage() {
                 CSVエクスポート
             </Button>
 
-            {/* Results List */}
             <ul className="space-y-2">
                 {results?.map(r => (
-                    <li key={r.id} className="bg-white p-3 rounded-lg border">
+                    <li key={r.id} className="bg-white dark:bg-gray-800 p-3 rounded-lg border dark:border-gray-700">
                         <div className="flex justify-between items-start">
                             <div>
-                                <p className="text-xs text-gray-500">{r.date}</p>
-                                <p className="text-sm font-medium">
+                                <p className="text-xs text-gray-500 dark:text-gray-400">{r.date}</p>
+                                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                                     {recordType === 'expense'
                                         ? getCategoryName((r as Expense).category_id)
                                         : getSourceName((r as Income).source_id)
                                     }
                                 </p>
                                 {recordType === 'expense' && (r as Expense).is_fixed && (
-                                    <span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">固定</span>
+                                    <span className="text-xs bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-1.5 py-0.5 rounded">固定</span>
                                 )}
                             </div>
-                            <span className={cn("font-bold", recordType === 'income' ? "text-green-600" : "")}>
+                            <span className={cn("font-bold", recordType === 'income' ? "text-green-600 dark:text-green-400" : "text-gray-900 dark:text-white")}>
                                 {recordType === 'income' ? '+' : ''}¥{r.amount.toLocaleString()}
                             </span>
                         </div>
@@ -302,7 +295,7 @@ export default function SearchPage() {
             </ul>
 
             {results?.length === 0 && (
-                <p className="text-center text-gray-500 py-8 text-sm">
+                <p className="text-center text-gray-500 dark:text-gray-400 py-8 text-sm">
                     条件に一致するデータがありません
                 </p>
             )}

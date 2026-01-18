@@ -17,6 +17,10 @@ interface EntryFormProps {
     onDateChange: (date: string) => void;
 }
 
+const selectClassName = "mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600";
+
+const textareaClassName = "mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 min-h-[60px] placeholder:text-gray-500 dark:placeholder:text-gray-400";
+
 export function EntryForm({
     editingId,
     onSuccess,
@@ -38,7 +42,6 @@ export function EntryForm({
 
     const [isLoading, setIsLoading] = useState(false);
 
-    // Load editing data
     useEffect(() => {
         if (editingId) {
             db.expenses.get(editingId).then((exp) => {
@@ -109,10 +112,9 @@ export function EntryForm({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 bg-white p-4 rounded-lg shadow-sm border">
-            {/* Date */}
+        <form onSubmit={handleSubmit} className="space-y-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border dark:border-gray-700">
             <div>
-                <label className="block text-sm font-medium text-gray-700">日付</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">日付</label>
                 <Input
                     type="date"
                     value={selectedDate}
@@ -122,13 +124,12 @@ export function EntryForm({
                 />
             </div>
 
-            {/* Category */}
             <div>
-                <label className="block text-sm font-medium text-gray-700">支出区分</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">支出区分</label>
                 <select
                     value={categoryId}
                     onChange={(e) => setCategoryId(e.target.value)}
-                    className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+                    className={selectClassName}
                     required
                 >
                     <option value="">支出区分を選択</option>
@@ -140,9 +141,8 @@ export function EntryForm({
                 </select>
             </div>
 
-            {/* Amount */}
             <div>
-                <label className="block text-sm font-medium text-gray-700">金額</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">金額</label>
                 <NumericInput
                     value={amount}
                     onChange={setAmount}
@@ -152,9 +152,8 @@ export function EntryForm({
                 />
             </div>
 
-            {/* Description */}
             <div>
-                <label className="block text-sm font-medium text-gray-700">内容</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">内容</label>
                 <Input
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
@@ -163,9 +162,8 @@ export function EntryForm({
                 />
             </div>
 
-            {/* Rating */}
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">評価</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">評価</label>
                 <div className="flex gap-2">
                     {(['○', '△', '✖'] as const).map((r) => (
                         <button
@@ -176,7 +174,7 @@ export function EntryForm({
                                 ? (r === '○' ? 'bg-green-100 border-green-500 text-green-700' :
                                     r === '△' ? 'bg-yellow-100 border-yellow-500 text-yellow-700' :
                                         'bg-red-100 border-red-500 text-red-700')
-                                : 'bg-gray-50 border-gray-200 text-gray-400 hover:bg-gray-100'
+                                : 'bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-600'
                                 }`}
                         >
                             {r}
@@ -185,13 +183,12 @@ export function EntryForm({
                 </div>
             </div>
 
-            {/* Payment Method */}
             <div>
-                <label className="block text-sm font-medium text-gray-700">支払い方法</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">支払い方法</label>
                 <select
                     value={paymentMethodId}
                     onChange={(e) => setPaymentMethodId(e.target.value)}
-                    className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+                    className={selectClassName}
                     required
                 >
                     <option value="">支払い方法を選択</option>
@@ -203,18 +200,16 @@ export function EntryForm({
                 </select>
             </div>
 
-            {/* Memo */}
             <div>
-                <label className="block text-sm font-medium text-gray-700">メモ</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">メモ</label>
                 <textarea
                     value={memo}
                     onChange={(e) => setMemo(e.target.value)}
-                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 min-h-[60px]"
+                    className={textareaClassName}
                     placeholder="備考..."
                 />
             </div>
 
-            {/* Buttons */}
             <div className="flex gap-2 pt-2">
                 {!editingId ? (
                     <Button type="submit" isLoading={isLoading} className="w-full">
