@@ -1,0 +1,24 @@
+{
+  "name": "自分用楽家計簿",
+  "short_name": "楽家計簿",
+  "description": "自分用に作った、支出・収入・固定費をかんたんに管理できる家計簿アプリ",
+  "lang": "ja",
+  "display": "standalone",
+  "start_url": "/",
+  "background_color": "#000000",
+  "theme_color": "#0A3DFF",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
