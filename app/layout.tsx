@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { BottomNav } from '@/components/layout/BottomNav';
 import { ToastProvider } from '@/components/providers/ToastProvider';
 import { AppInitProvider } from '@/components/providers/AppInitProvider';
+import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FFFFFF",
+  themeColor: "#111827",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -40,18 +41,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja">
+    <html lang="ja" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 text-gray-900 pb-20 safe-area-bottom`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased pb-20 safe-area-bottom transition-colors duration-200`}
       >
-        <AppInitProvider>
-          <ToastProvider>
-            <main className="min-h-screen">
-              {children}
-            </main>
-            <BottomNav />
-          </ToastProvider>
-        </AppInitProvider>
+        <ThemeProvider>
+          <AppInitProvider>
+            <ToastProvider>
+              <main className="min-h-screen">
+                {children}
+              </main>
+              <BottomNav />
+            </ToastProvider>
+          </AppInitProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
